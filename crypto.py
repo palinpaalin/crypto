@@ -123,7 +123,7 @@ fig3.update_layout(
     yaxis_title="Close Price USD ($)",
     template='plotly_white'
 )
-fig3.add_trace(go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='indianred', name='Close'))
+fig3.add_trace(go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='indianred', name='Real-time Price'))
 fig3.add_trace(go.Scatter(mode='lines', x=df111_pred.index, y=df111_pred[df111_pred.columns[0]], line_color='lightskyblue', name='LSTM Prediction'))
 # Add range slider
 fig3.update_layout(
