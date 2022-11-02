@@ -43,7 +43,7 @@ df111 = GetDataFrame(data1)
 
 print(df111.head)
 
-df111_pred = prediction(df111)
+df111_pred, accuracy = prediction(df111)
 
 def load_data(file_name, nrows=1000):
     d = pd.read_csv(file_name, nrows=nrows)
@@ -55,9 +55,10 @@ st.title("Bitcoin Visualisation Dashboard")
 curr_price = round(float(data['price']), 2)
 curr_pred_price = round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]), 2)
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 col1.metric(label="Bitcoin", value="{} USD".format(curr_price), delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
 col2.metric(label="Next Prediction", value="{} USD".format(curr_pred_price), delta=round(curr_pred_price - curr_price, 2))
+col3.metric(label="Accuracy", value="{}%".format(round(accuracy * 100, 2)))
 
 st.write('\n\n*expand sitebar to the left for more info*')
 
@@ -112,7 +113,7 @@ df3 = df3[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime']
 df3 = df3.rename(columns={'DateTime': 'index'}).set_index('index')
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(mode='lines', x=df1.index, y=df1['close'], line_color='lightgreen', name='Close'))
+fig.add_trace(go.Scatter(mode='lines', x=df1.index, y=df1['close'], line_color='forestgreen', name='Close'))
 
 fig3 = go.Figure()
 fig3.update_layout(

@@ -1,5 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Activation, Dense, Dropout, LSTM
+from keras import metrics
 import numpy as np
 import pandas as pd
 
@@ -70,7 +71,7 @@ def build_lstm_model(input_data, output_size, neurons=20, activ_func='linear',
     model.add(Dense(units=output_size))
     model.add(Activation(activ_func))
 
-    model.compile(loss=loss, optimizer=optimizer)
+    model.compile(loss=loss, optimizer=optimizer, metrics=[metrics.Accuracy()])
     return model
 
 def prediction(df):
@@ -105,4 +106,6 @@ def prediction(df):
     preds = test['Close'].values[:-window_len] * (preds + 1)
     preds = pd.DataFrame(index=targets.index, data=preds)
 
-    return preds
+    accuracy = history.history['accuracy'][-1]
+
+    return preds, accuracy
