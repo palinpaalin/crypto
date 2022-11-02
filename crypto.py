@@ -29,7 +29,7 @@ interval = "1m"
 st.sidebar.write('Select Live Data From API to Visualise')
 fromDate = st.sidebar.date_input('From', datetime.strptime('2022-10-31', '%Y-%m-%d'))
 
-liveDataLimit = st.sidebar.number_input('Input the number of data limit', key=1, min_value=0, value=1000)
+liveDataLimit = st.sidebar.number_input('Input the number of data limit', key=1, min_value=0, value=10000)
 
 st.sidebar.success('From date: `%s`\n\nData limit: `%d`' % (fromDate, liveDataLimit))
 
@@ -67,7 +67,7 @@ file_name = 'minutesprice.csv'
 
 
 st.sidebar.write('Select Historical Data on File to Visualise')
-hisDataLimit = st.sidebar.number_input('Input the number of data limit', key=2, min_value=0, value=1000)
+hisDataLimit = st.sidebar.number_input('Input the number of data limit', key=2, min_value=0, value=10000)
 
 df = load_data(file_name, hisDataLimit)
 df1 = df[['DateTime', 'close']]
