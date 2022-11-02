@@ -1,0 +1,12 @@
+# Web application development framework
+streamlit
+
+# Python Data packages
+plotly #==4.12.0
+pandas #==1.1.4
+
+# Web package
+requests #==2.13.0
+
+
+
