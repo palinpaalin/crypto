@@ -11,6 +11,7 @@ def train_test_split(df, test_size=0.1):
     test_data = df.iloc[split_row:]
     return train_data, test_data
 
+
 """
 LSTM
 """
@@ -30,6 +31,7 @@ def normalise_min_max(df):
 def extract_window_data(df, window_len=10, zero_base=True):
     """ Convert dataframe to overlapping sequences/windows of len `window_data`.
 
+        :param df: dataframe
         :param window_len: Size of window
         :param zero_base: If True, the data in each window is normalised to reflect changes
             with respect to the first entry in the window (which is then always 0)
@@ -71,11 +73,11 @@ def build_lstm_model(input_data, output_size, neurons=20, activ_func='linear',
     model.add(Dense(units=output_size))
     model.add(Activation(activ_func))
 
-    model.compile(loss=loss, optimizer=optimizer, metrics=[metrics.Accuracy()])
+    model.compile(loss=loss, optimizer=optimizer)
     return model
 
+
 def prediction(df):
-    train, test = train_test_split(df, test_size=0.1)
     np.random.seed(42)
 
     # data params
@@ -106,6 +108,4 @@ def prediction(df):
     preds = test['Close'].values[:-window_len] * (preds + 1)
     preds = pd.DataFrame(index=targets.index, data=preds)
 
-    accuracy = history.history['accuracy'][-1]
-
-    return preds, accuracy
+    return preds

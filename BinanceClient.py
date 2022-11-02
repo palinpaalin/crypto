@@ -4,6 +4,7 @@ import requests
 from typing import *
 import time
 
+
 class BinanceClient:
     def __init__(self, futures=False):
         self.exchange = "BINANCE"
@@ -93,8 +94,6 @@ def GetHistoricalData(client, symbol, start_time, end_time, limit=1500):
 
     while start_time < end_time:
         data = client.get_historical_data(symbol, start_time=start_time, end_time=end_time, limit=limit)
-        print(client.exchange + " " + symbol + " : Collected " + str(len(data)) + " initial data from " + str(
-            ms_to_dt_local(data[0][0])) + " to " + str(ms_to_dt_local(data[-1][0])))
         start_time = int(data[-1][0] + 1000)
         collection += data
         time.sleep(1.1)

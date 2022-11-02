@@ -41,9 +41,7 @@ toDate = int(datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d'
 data1 = GetHistoricalData(client, symbol, fromDate, toDate, liveDataLimit)
 df111 = GetDataFrame(data1)
 
-print(df111.head)
-
-df111_pred, accuracy = prediction(df111)
+df111_pred = prediction(df111)
 
 def load_data(file_name, nrows=1000):
     d = pd.read_csv(file_name, nrows=nrows)
@@ -58,7 +56,6 @@ curr_pred_price = round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]
 col1, col2, col3 = st.columns(3)
 col1.metric(label="Bitcoin", value="{} USD".format(curr_price), delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
 col2.metric(label="Next Prediction", value="{} USD".format(curr_pred_price), delta=round(curr_pred_price - curr_price, 2))
-col3.metric(label="Accuracy", value="{}%".format(round(accuracy * 100, 2)))
 
 st.write('\n\n*expand sitebar to the left for more info*')
 
@@ -220,5 +217,3 @@ st.write(fig)
 
 st.write(fig2)
 st.write(df1.describe())
-
-
