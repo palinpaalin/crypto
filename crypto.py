@@ -8,11 +8,10 @@ import plotly.graph_objects as go
 
 import requests
 
-
 st.set_page_config(initial_sidebar_state='collapsed',
-    page_title="BTC Dashboard",
-    page_icon='btc.png'
-)
+                   page_title="BTC Dashboard",
+                   page_icon='btc.png'
+                   )
 
 # defining key/request url
 key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
@@ -34,14 +33,15 @@ st.sidebar.success('From date: `%s`\n\nData limit: `%d`' % (fromDate, liveDataLi
 
 st.sidebar.write('--------------------------------------')
 
-fromDate = int(datetime.strptime('{}-{}-{}'.format(fromDate.year, fromDate.month, fromDate.day), '%Y-%m-%d').timestamp() * 1000)
+fromDate = int(
+    datetime.strptime('{}-{}-{}'.format(fromDate.year, fromDate.month, fromDate.day), '%Y-%m-%d').timestamp() * 1000)
 toDate = int(datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d').timestamp() * 1000)
-
 
 data1 = GetHistoricalData(client, symbol, fromDate, toDate, liveDataLimit)
 df111 = GetDataFrame(data1)
 
 df111_pred = prediction(df111)
+
 
 def load_data(file_name, nrows=1000):
     d = pd.read_csv(file_name, nrows=nrows)
@@ -54,13 +54,14 @@ curr_price = round(float(data['price']), 2)
 curr_pred_price = round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]), 2)
 
 col1, col2, col3 = st.columns(3)
-col1.metric(label="Bitcoin", value="{} USD".format(curr_price), delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
-col2.metric(label="Next Prediction", value="{} USD".format(curr_pred_price), delta=round(curr_pred_price - curr_price, 2))
+col1.metric(label="Bitcoin", value="{} USD".format(curr_price),
+            delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
+col2.metric(label="Next Prediction", value="{} USD".format(curr_pred_price),
+            delta=round(curr_pred_price - curr_price, 2))
 
 st.write('\n\n*expand sitebar to the left for more info*')
 
 file_name = 'minutesprice.csv'
-
 
 st.sidebar.write('Select Historical Data on File to Visualise')
 hisDataLimit = st.sidebar.number_input('Input the number of data limit', key=2, min_value=0, value=10000)
@@ -83,7 +84,6 @@ else:
 df1 = df1[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime'] <= end_date.strftime('%Y-%m-%d'))]
 df1 = df1.rename(columns={'DateTime': 'index'}).set_index('index')
 
-
 df2 = df[['DateTime', 'sentiment_score']]
 df2 = df2[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime'] <= end_date.strftime('%Y-%m-%d'))]
 df2 = df2.rename(columns={'DateTime': 'index'}).set_index('index')
@@ -91,9 +91,8 @@ df2 = df2.rename(columns={'DateTime': 'index'}).set_index('index')
 fig2 = go.Figure()
 # plot data
 fig2.add_trace(
- go.Bar(x=df2.index, y=df2['sentiment_score'], marker = {'color':'firebrick'})
+    go.Bar(x=df2.index, y=df2['sentiment_score'], marker={'color': 'firebrick'})
 )
-
 
 fig2.update_layout(
     autosize=True,
@@ -103,7 +102,6 @@ fig2.update_layout(
     yaxis_title="Score",
     template='plotly_white'
 )
-
 
 df3 = df[['DateTime', 'sentiment_score']]
 df3 = df3[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime'] <= end_date.strftime('%Y-%m-%d'))]
@@ -121,8 +119,11 @@ fig3.update_layout(
     yaxis_title="Close Price USD ($)",
     template='plotly_white'
 )
-fig3.add_trace(go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='indianred', name='Real-time Price'))
-fig3.add_trace(go.Scatter(mode='lines', x=df111_pred.index, y=df111_pred[df111_pred.columns[0]], line_color='lightskyblue', name='LSTM Prediction'))
+fig3.add_trace(
+    go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='indianred', name='Real-time Price'))
+fig3.add_trace(
+    go.Scatter(mode='lines', x=df111_pred.index, y=df111_pred[df111_pred.columns[0]], line_color='lightskyblue',
+               name='LSTM Prediction'))
 # Add range slider
 fig3.update_layout(
     xaxis=dict(
@@ -167,7 +168,6 @@ fig.update_layout(
     template='plotly_white'
 )
 
-
 # Add range slider
 fig.update_layout(
     xaxis=dict(
@@ -202,7 +202,6 @@ fig.update_layout(
         type="date"
     )
 )
-
 
 st.write(fig3)
 
