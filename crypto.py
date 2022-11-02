@@ -53,7 +53,7 @@ st.title("Bitcoin Visualisation Dashboard")
 curr_price = round(float(data['price']), 2)
 curr_pred_price = round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]), 2)
 
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 col1.metric(label="Bitcoin", value="{} USD".format(curr_price),
             delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
 col2.metric(label="Next Prediction", value="{} USD".format(curr_pred_price),
@@ -207,7 +207,7 @@ st.write(fig3)
 
 st.write(df111.describe())
 
-st.write('Next-Five Predictions')
+st.write('Last-Five Predictions')
 st.write(df111_pred.tail())
 
 st.write('--------------------------------------')
