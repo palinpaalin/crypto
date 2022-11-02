@@ -2,9 +2,8 @@
 import streamlit as st
 import pandas as pd
 from BinanceClient import *
+from lstm import *
 import dateutil.parser
-import os
-import glob
 import plotly.graph_objects as go
 
 import requests
@@ -39,17 +38,12 @@ fromDate = int(datetime.strptime('{}-{}-{}'.format(fromDate.year, fromDate.month
 toDate = int(datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d').timestamp() * 1000)
 
 
-
 data1 = GetHistoricalData(client, symbol, fromDate, toDate, liveDataLimit)
 df111 = GetDataFrame(data1)
 
 print(df111.head)
 
-# use glob to get all the csv files
-# in the folder
-path = os.getcwd()
-csv_files = glob.glob(os.path.join(path, "*.csv"))
-file_names = [path[path.rfind('/')+1:]for path in csv_files]
+df111_pred = prediction(df111)
 
 def load_data(file_name, nrows=1000):
     d = pd.read_csv(file_name, nrows=nrows)
@@ -59,9 +53,13 @@ def load_data(file_name, nrows=1000):
 st.title("Bitcoin Visualisation Dashboard")
 
 curr_price = round(float(data['price']), 2)
-st.metric(label="Bitcoin", value="{} USD".format(curr_price), delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
+curr_pred_price = round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]), 2)
 
-st.write('*expand sitebar to the left for more info*')
+col1, col2 = st.columns(2)
+col1.metric(label="Bitcoin", value="{} USD".format(curr_price), delta=round(curr_price - df111['Close'][df111.index[-1]], 2))
+col2.metric(label="Next Prediction", value="{} USD".format(curr_pred_price), delta=round(curr_pred_price - curr_price, 2))
+
+st.write('\n\n*expand sitebar to the left for more info*')
 
 file_name = 'minutesprice.csv'
 
@@ -86,13 +84,11 @@ else:
 # Line Chart
 df1 = df1[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime'] <= end_date.strftime('%Y-%m-%d'))]
 df1 = df1.rename(columns={'DateTime': 'index'}).set_index('index')
-# st.line_chart(df1)
 
 
 df2 = df[['DateTime', 'sentiment_score']]
 df2 = df2[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime'] <= end_date.strftime('%Y-%m-%d'))]
 df2 = df2.rename(columns={'DateTime': 'index'}).set_index('index')
-# st.bar_chart(df2)
 
 fig2 = go.Figure()
 # plot data
@@ -116,9 +112,7 @@ df3 = df3[(start_date.strftime('%Y-%m-%d ') <= df['DateTime']) & (df['DateTime']
 df3 = df3.rename(columns={'DateTime': 'index'}).set_index('index')
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(mode='lines', x=df1.index, y=df1['close'], line_color='blue', name='Close'))
-# fig2.add_trace(go.Scatter(mode='lines', x=df3.index, y=df3['sentiment_score'], line_color='orange', name='Sentiment'))
-# fig.add_trace(go.Scatter(mode='lines', x=valid.index, y=valid['Predictions'], line_color='green',name='Predictions'))
+fig.add_trace(go.Scatter(mode='lines', x=df1.index, y=df1['close'], line_color='lightgreen', name='Close'))
 
 fig3 = go.Figure()
 fig3.update_layout(
@@ -129,8 +123,8 @@ fig3.update_layout(
     yaxis_title="Close Price USD ($)",
     template='plotly_white'
 )
-fig3.add_trace(go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='orange', name='Close'))
-
+fig3.add_trace(go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='indianred', name='Close'))
+fig3.add_trace(go.Scatter(mode='lines', x=df111_pred.index, y=df111_pred[df111_pred.columns[0]], line_color='lightskyblue', name='LSTM Prediction'))
 # Add range slider
 fig3.update_layout(
     xaxis=dict(
@@ -215,6 +209,9 @@ fig.update_layout(
 st.write(fig3)
 
 st.write(df111.describe())
+
+st.write('Next-Five Predictions')
+st.write(df111_pred.tail())
 
 st.write('--------------------------------------')
 

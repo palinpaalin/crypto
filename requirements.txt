@@ -4,6 +4,9 @@ streamlit
 # Python Data packages
 plotly #==4.12.0
 pandas #==1.1.4
+keras #==2.10.0
+tensorflow #==2.10.0
+Jinja2 #==3.0.1
 
 # Web package
 requests #==2.13.0
