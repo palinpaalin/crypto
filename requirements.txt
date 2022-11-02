@@ -7,6 +7,3 @@ pandas #==1.1.4
 
 # Web package
 requests #==2.13.0
-
-
-
