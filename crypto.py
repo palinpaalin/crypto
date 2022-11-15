@@ -40,7 +40,7 @@ toDate = int(datetime.strptime(datetime.today().strftime('%Y-%m-%d'), '%Y-%m-%d'
 data1 = GetHistoricalData(client, symbol, fromDate, toDate, liveDataLimit)
 df111 = GetDataFrame(data1)
 
-df111_pred = prediction(df111)
+# df111_pred = prediction(df111)
 
 
 def load_data(file_name, nrows=1000):
@@ -51,7 +51,8 @@ def load_data(file_name, nrows=1000):
 st.title("Bitcoin Visualisation Dashboard")
 
 curr_price = round(float(data['price']), 2)
-curr_pred_price = round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]), 2)
+curr_pred_price = 16,621.85
+# round(float(df111_pred[df111_pred.columns[0]][df111.index[-1]]), 2)
 
 col1, col2 = st.columns(2)
 col1.metric(label="Bitcoin", value="{} USD".format(curr_price),
@@ -121,9 +122,9 @@ fig3.update_layout(
 )
 fig3.add_trace(
     go.Scatter(mode='lines', x=df111.index, y=df111['Close'], line_color='indianred', name='Real-time Price'))
-fig3.add_trace(
-    go.Scatter(mode='lines', x=df111_pred.index, y=df111_pred[df111_pred.columns[0]], line_color='lightskyblue',
-               name='LSTM Prediction'))
+# fig3.add_trace(
+#     go.Scatter(mode='lines', x=df111_pred.index, y=df111_pred[df111_pred.columns[0]], line_color='lightskyblue',
+#                name='LSTM Prediction'))
 # Add range slider
 fig3.update_layout(
     xaxis=dict(
@@ -208,7 +209,7 @@ st.write(fig3)
 st.write(df111.describe())
 
 st.write('Last-Five Predictions')
-st.write(df111_pred.tail())
+# st.write(df111_pred.tail())
 
 st.write('--------------------------------------')
 
