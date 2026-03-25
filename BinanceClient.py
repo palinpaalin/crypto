@@ -21,25 +21,24 @@ class BinanceClient:
         try:
             response = requests.get(self._base_url + endpoint, params=query_parameters)
         except Exception as e:
-            print("Connection error while making request to %s: %s", endpoint, e)
+            print(f"Connection error while making request to {endpoint}: {e}")
             return None
 
         if response.status_code == 200:
             return response.json()
         else:
-            print("Error while making request to %s: %s (status code = %s)",
-                  endpoint, response.json(), response.status_code)
+            print(f"Error while making request to {endpoint}: {response.json()} (status code = {response.status_code})")
             return None
 
     def _get_symbols(self) -> List[str]:
-
         params = dict()
-
         endpoint = "/fapi/v1/exchangeInfo" if self.futures else "/api/v3/exchangeInfo"
         data = self._make_request(endpoint, params)
 
-        symbols = [x["symbol"] for x in data["symbols"]]
+        if data is None:
+            return []
 
+        symbols = [x["symbol"] for x in data["symbols"]]
         return symbols
 
     def get_historical_data(self, symbol: str, interval: Optional[str] = "1m", start_time: Optional[int] = None,
@@ -94,6 +93,13 @@ def GetHistoricalData(client, symbol, start_time, end_time, limit=1500):
 
     while start_time < end_time:
         data = client.get_historical_data(symbol, start_time=start_time, end_time=end_time, limit=limit)
+
+        if data is None:
+            break
+
+        print(client.exchange + " " + symbol + " : Collected " + str(len(data)) + " initial data from " + str(
+            ms_to_dt_local(data[0][0])) + " to " + str(ms_to_dt_local(data[-1][0])))
+
         start_time = int(data[-1][0] + 1000)
         collection += data
         time.sleep(1.1)
